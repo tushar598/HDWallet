@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HD Wallet</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        /* background: linear-gradient(135deg, #e30613 0%, #8b0000 100%); */
+        background: black;
+        min-height: 100vh;
+        padding: 20px;
+        position: relative;
+        overflow-x: hidden;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 2px,
+          rgba(0, 0, 0, 0.03) 2px,
+          rgba(0, 0, 0, 0.03) 4px
+        );
+        pointer-events: none;
+        z-index: 1;
+      }
+
+      .container {
+        max-width: 900px;
+        margin: 0 auto;
+        background: linear-gradient(145deg, #ffffff, #f8f9fa);
+        padding: 40px;
+        border-radius: 24px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3),
+          0 0 0 1px rgba(255, 255, 255, 0.1),
+          inset 0 1px 0 rgba(255, 255, 255, 0.6);
+        position: relative;
+        z-index: 2;
+        border: 4px solid #e30613;
+      }
+
+      .container::before {
+        content: "";
+        position: absolute;
+        top: -4px;
+        left: -4px;
+        right: -4px;
+        bottom: -4px;
+        background: linear-gradient(45deg, #ffd700, #ffed4e, #ffd700);
+        border-radius: 26px;
+        z-index: -1;
+        opacity: 0.5;
+      }
+
+      h1 {
+        text-align: center;
+        color: #e30613;
+        font-size: 2.5rem;
+        font-weight: 900;
+        margin-bottom: 10px;
+        text-shadow: 3px 3px 0px #ffffff, 4px 4px 0px #000000;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+      }
+
+      .subtitle {
+        text-align: center;
+        color: #666;
+        font-size: 1rem;
+        margin-bottom: 35px;
+        font-weight: 500;
+      }
+
+      label {
+        display: block;
+        margin-top: 25px;
+        margin-bottom: 10px;
+        color: #2c3e50;
+        font-weight: 700;
+        font-size: 1.1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      select {
+        width: 100%;
+        padding: 16px 20px;
+        margin-top: 8px;
+        border-radius: 12px;
+        border: 3px solid #e30613;
+        background: white;
+        font-size: 1rem;
+        font-weight: 600;
+        color: #2c3e50;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      select:hover {
+        border-color: #ffd700;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      select:focus {
+        outline: none;
+        border-color: #ffd700;
+        box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.3);
+      }
+
+      button {
+        width: 100%;
+        padding: 18px;
+        margin-top: 25px;
+        border-radius: 12px;
+        border: none;
+        background: linear-gradient(135deg, #e30613 0%, #c10510 100%);
+        color: white;
+        font-size: 1.2rem;
+        font-weight: 900;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        box-shadow: 0 6px 20px rgba(227, 6, 19, 0.4),
+          inset 0 -3px 0 rgba(0, 0, 0, 0.2);
+        position: relative;
+        overflow: hidden;
+      }
+
+      button::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 255, 255, 0.3),
+          transparent
+        );
+        transition: left 0.5s;
+      }
+
+      button:hover::before {
+        left: 100%;
+      }
+
+      button:hover {
+        background: linear-gradient(135deg, #ff0a1a 0%, #e30613 100%);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(227, 6, 19, 0.5),
+          inset 0 -3px 0 rgba(0, 0, 0, 0.2);
+      }
+
+      button:active {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 15px rgba(227, 6, 19, 0.4),
+          inset 0 -2px 0 rgba(0, 0, 0, 0.2);
+      }
+
+      #addAccountBtn {
+        background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+        color: #2c3e50;
+        box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4),
+          inset 0 -3px 0 rgba(0, 0, 0, 0.1);
+      }
+
+      #addAccountBtn:hover {
+        background: linear-gradient(135deg, #ffe44d 0%, #ffd700 100%);
+        box-shadow: 0 8px 25px rgba(255, 215, 0, 0.5),
+          inset 0 -3px 0 rgba(0, 0, 0, 0.1);
+      }
+
+      #mnemonicBox,
+      #walletSection {
+        margin-top: 35px;
+        animation: slideIn 0.5s ease;
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      #mnemonicBox h3,
+      #walletSection h3 {
+        color: #e30613;
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.1);
+      }
+
+      #mnemonic {
+        background: linear-gradient(135deg, #fff9e6 0%, #fffbf0 100%);
+        padding: 20px;
+        border-radius: 12px;
+        word-break: break-word;
+        border: 3px solid #ffd700;
+        font-family: "Courier New", monospace;
+        font-size: 1rem;
+        color: #2c3e50;
+        font-weight: 600;
+        line-height: 1.8;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1),
+          inset 0 2px 4px rgba(255, 215, 0, 0.2);
+      }
+
+      #wallets {
+        margin-top: 20px;
+        display: grid;
+        gap: 20px;
+      }
+
+      .wallet {
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+        border: 3px solid #e30613;
+        padding: 25px;
+        border-radius: 16px;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .wallet::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 6px;
+        height: 100%;
+        background: linear-gradient(180deg, #ffd700 0%, #e30613 100%);
+      }
+
+      .wallet:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        border-color: #ffd700;
+      }
+
+      .wallet p {
+        margin: 12px 0;
+        color: #2c3e50;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        padding-left: 15px;
+      }
+
+      .wallet p b {
+        color: #e30613;
+        font-weight: 900;
+        display: inline-block;
+        min-width: 110px;
+        text-transform: uppercase;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+      }
+
+      .wallet p:first-child {
+        font-size: 1.3rem;
+        color: #e30613;
+        border-bottom: 2px solid #ffd700;
+        padding-bottom: 10px;
+        margin-bottom: 15px;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      .coin-decoration {
+        position: fixed;
+        width: 40px;
+        height: 40px;
+        background: radial-gradient(circle, #ffd700 0%, #ffed4e 100%);
+        border-radius: 50%;
+        border: 3px solid #e30613;
+        animation: float 3s ease-in-out infinite;
+        z-index: 0;
+        box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+      }
+
+      .coin-decoration:nth-child(1) {
+        top: 10%;
+        left: 5%;
+        animation-delay: 0s;
+      }
+
+      .coin-decoration:nth-child(2) {
+        top: 70%;
+        right: 8%;
+        animation-delay: 1s;
+      }
+
+      .coin-decoration:nth-child(3) {
+        top: 40%;
+        left: 8%;
+        animation-delay: 2s;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px) rotate(0deg);
+        }
+        50% {
+          transform: translateY(-20px) rotate(180deg);
+        }
+      }
+
+      @media (max-width: 768px) {
+        body {
+          padding: 15px;
+        }
+
+        .container {
+          padding: 25px 20px;
+        }
+
+        h1 {
+          font-size: 1.8rem;
+        }
+
+        .subtitle {
+          font-size: 0.9rem;
+        }
+
+        label {
+          font-size: 1rem;
+        }
+
+        select,
+        button {
+          padding: 14px 16px;
+          font-size: 0.95rem;
+        }
+
+        .wallet {
+          padding: 20px 15px;
+        }
+
+        .wallet p {
+          font-size: 0.85rem;
+          word-break: break-all;
+        }
+
+        .wallet p b {
+          display: block;
+          margin-bottom: 5px;
+          min-width: auto;
+        }
+
+        .coin-decoration {
+          width: 30px;
+          height: 30px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        h1 {
+          font-size: 1.5rem;
+          letter-spacing: 1px;
+        }
+
+        .container {
+          padding: 20px 15px;
+          border-width: 3px;
+        }
+
+        #mnemonic {
+          font-size: 0.85rem;
+          padding: 15px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="coin-decoration"></div>
+    <div class="coin-decoration"></div>
+    <div class="coin-decoration"></div>
+
+    <div class="container">
+      <h1>🍄 HD Wallet 🍄</h1>
+      <p class="subtitle">Power Up Your Crypto Journey!</p>
+
+      <label>🎮 Select Network</label>
+      <select id="walletName">
+        <option value="ethereum">Ethereum</option>
+        <option value="polygon">Polygon</option>
+        <option value="bsc">BSC</option>
+        <option value="avalanche">Avalanche</option>
+        <option value="arbitrum">Arbitrum</option>
+        <option value="optimism">Optimism</option>
+        <option value="fantom">Fantom</option>
+        <option value="celo">Celo</option>
+        <option value="moonbeam">Moonbeam</option>
+        <option value="moonriver">Moonriver</option>
+        <option value="aurora">Aurora</option>
+      </select>
+
+      <button id="generateBtn">🚀 Generate Wallet</button>
+
+      <div id="mnemonicBox" class="hidden">
+        <h3>🔐 Seed Phrase (Save it securely)</h3>
+        <p id="mnemonic"></p>
+      </div>
+
+      <div id="walletSection" class="hidden">
+        <h3>💰 Derived Wallets</h3>
+        <div id="wallets"></div>
+        <button id="addAccountBtn">➕ Add Account</button>
+      </div>
+    </div>
+
+    <script>
+      const API_BASE = "http://localhost:5010/api/wallet";
+
+      let mnemonic = "";
+      let walletName = "";
+      let walletIndex = 1;
+
+      // DOM Elements
+      const generateBtn = document.getElementById("generateBtn");
+      const addAccountBtn = document.getElementById("addAccountBtn");
+      const mnemonicBox = document.getElementById("mnemonicBox");
+      const mnemonicText = document.getElementById("mnemonic");
+      const walletSection = document.getElementById("walletSection");
+      const walletsDiv = document.getElementById("wallets");
+      const walletSelect = document.getElementById("walletName");
+
+      // Generate wallet
+      generateBtn.addEventListener("click", async () => {
+        walletName = walletSelect.value;
+        walletIndex = 1;
+        walletsDiv.innerHTML = "";
+
+        const res = await fetch(`${API_BASE}/generate`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ walletName }),
+        });
+
+        const data = await res.json();
+
+        mnemonic = data.mnemonic;
+        mnemonicText.innerText = mnemonic;
+        mnemonicBox.classList.remove("hidden");
+
+        addWalletToUI(data.wallet);
+
+        walletSection.classList.remove("hidden");
+      });
+
+      // Add new derived account
+      addAccountBtn.addEventListener("click", async () => {
+        const res = await fetch(`${API_BASE}/derive`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            mnemonic,
+            walletName,
+            index: walletIndex,
+          }),
+        });
+
+        const wallet = await res.json();
+        addWalletToUI(wallet);
+        walletIndex++;
+      });
+
+      // UI helper
+      function addWalletToUI(wallet) {
+        const div = document.createElement("div");
+        div.className = "wallet";
+
+        div.innerHTML = `
+          <p><b>⭐ Account ${wallet.index}</b></p>
+          <p><b>Address:</b> ${wallet.address}</p>
+          <p><b>Public Key:</b> ${wallet.publicKey}</p>
+          <p><b>Private Key:</b> ${wallet.privateKey}</p>
+        `;
+
+        walletsDiv.appendChild(div);
+      }
+    </script>
+  </body>
+</html>
