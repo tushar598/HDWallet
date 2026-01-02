@@ -12,6 +12,10 @@ app.use(express.json());
 
 app.use("/api/wallet", walletRoutes);
 
+app.get("/", async (req, res) => {
+  res.status(200).json({ message: "hello" });
+});
+
 const PORT = process.env.PORT;
 
 app.listen(PORT, () => {
