@@ -440,7 +440,7 @@
     </div>
 
     <script>
-      const API_BASE = "hd-wallet-bice.vercel.app/api/wallet";
+      const API_BASE = "https://hd-wallet-bice.vercel.app";
 
       let mnemonic = "";
       let walletName = "";
@@ -460,8 +460,8 @@
       generateBtn.addEventListener("click", async () => {
         walletName = walletSelect.value;
         walletsDiv.innerHTML = "";
-
-        const res = await fetch(`${API_BASE}/generate`, {
+        console.log(API_BASE);
+        const res = await fetch(`${API_BASE}/api/wallet/generate`, {
           method: "GET",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(),
@@ -476,7 +476,7 @@
       createBtn.addEventListener("click", async () => {
         walletName = walletSelect.value;
 
-        const res = await fetch(`${API_BASE}/create`, {
+        const res = await fetch(`${API_BASE}/api/wallet/create`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ mnemonic, walletName }),
@@ -490,7 +490,7 @@
       // Add new derived account
       addAccountBtn.addEventListener("click", async () => {
         walletName = walletSelect.value;
-        const res = await fetch(`${API_BASE}/derive`, {
+        const res = await fetch(`${API_BASE}/api/wallet/derive`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
