@@ -431,7 +431,7 @@
         <h3>🔐 Seed Phrase (Save it securely)</h3>
         <p id="mnemonic"></p>
       </div>
-
+      <button id="createBtn">🚀 Create Wallet</button>
       <div id="walletSection" class="hidden">
         <h3>💰 Derived Wallets</h3>
         <div id="wallets"></div>
@@ -440,7 +440,7 @@
     </div>
 
     <script>
-      const API_BASE = "https://hd-wallet-bice.vercel.app/api/wallet";
+      const API_BASE = "hd-wallet-bice.vercel.app/api/wallet";
 
       let mnemonic = "";
       let walletName = "";
@@ -454,32 +454,42 @@
       const walletSection = document.getElementById("walletSection");
       const walletsDiv = document.getElementById("wallets");
       const walletSelect = document.getElementById("walletName");
+      const createBtn = document.getElementById("createBtn");
 
       // Generate wallet
       generateBtn.addEventListener("click", async () => {
         walletName = walletSelect.value;
-        walletIndex = 1;
         walletsDiv.innerHTML = "";
 
         const res = await fetch(`${API_BASE}/generate`, {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(),
+        });
+        const data = await res.json();
+        mnemonic = data;
+        mnemonicText.innerText = mnemonic;
+        mnemonicBox.classList.remove("hidden");
+      });
+
+      // create a wallet :
+      createBtn.addEventListener("click", async () => {
+        walletName = walletSelect.value;
+
+        const res = await fetch(`${API_BASE}/create`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ walletName }),
+          body: JSON.stringify({ mnemonic, walletName }),
         });
 
         const data = await res.json();
-
-        mnemonic = data.mnemonic;
-        mnemonicText.innerText = mnemonic;
-        mnemonicBox.classList.remove("hidden");
-
-        addWalletToUI(data.wallet);
-
+        addWalletToUI(data.wallet, data.walletName);
         walletSection.classList.remove("hidden");
       });
 
       // Add new derived account
       addAccountBtn.addEventListener("click", async () => {
+        walletName = walletSelect.value;
         const res = await fetch(`${API_BASE}/derive`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -491,16 +501,18 @@
         });
 
         const wallet = await res.json();
-        addWalletToUI(wallet);
+        console.log(wallet);
+        addWalletToUI(wallet.newAccount, wallet.walletName);
         walletIndex++;
       });
 
       // UI helper
-      function addWalletToUI(wallet) {
+      function addWalletToUI(wallet, walletName) {
         const div = document.createElement("div");
         div.className = "wallet";
 
         div.innerHTML = `
+          <h3>  ${walletName} </h3>
           <p><b>⭐ Account ${wallet.index}</b></p>
           <p><b>Address:</b> ${wallet.address}</p>
           <p><b>Public Key:</b> ${wallet.publicKey}</p>

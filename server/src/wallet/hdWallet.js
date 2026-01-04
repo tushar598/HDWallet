@@ -32,11 +32,13 @@ export async function createHDWallet(mnemoic) {
 
 // Derive wallet by index:
 export function deriveWallet(hdWallet, walletName, index) {
-  const wallet = hdWallet.derivePath(`${DERIVATION_PATH[walletName]}/${index}`);
+ 
+    const wallet = hdWallet.derivePath(`${DERIVATION_PATH[walletName]}/${index}`);
   return {
     index,
     address: wallet.address,
     privateKey: wallet.privateKey,
     publicKey: wallet.publicKey,
   };
+  
 }
